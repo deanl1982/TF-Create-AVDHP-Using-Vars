@@ -15,11 +15,14 @@ variables:
 steps:
 
 - task: TerraformInstaller@0
-  displayName: install Terraform v0.12.28
   inputs:
-    terraformVersion: '0.12.28'
+    terraformVersion: 'latest'
 
-- task: TerraformTaskV1@0
+- task: TerraformCLI@0
+  inputs:
+    command: 'init'
+    allowTelemetryCollection: true
+- task: TerraformCLI@0
   displayName: terraform init
   inputs:
     provider: 'azurerm'
@@ -31,7 +34,7 @@ steps:
     backendAzureRmContainerName: '$(container)'
     backendAzureRmKey: '$(tfstateFile)'
 
-- task: TerraformTaskV1@0
+- task: TerraformCLI@0
   displayName: terraform plan -out=tfplan
   inputs:
     provider: 'azurerm'
@@ -41,7 +44,7 @@ steps:
     # commandOptions: '-detailed-exitcode -out=tfplan'
     # environmentServiceNameAzureRM: '$(subscription)'
 
-- task: TerraformTaskV1@0
+- task: TerraformCLI@0
   displayName: terraform apply tfplan
   # condition: eq(variables.anyTfChanges, true)
   inputs:
